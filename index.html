@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Club Match Interface</title>
+  <base target="_blank">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #DBE6F7;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 24px;
+      width: 100%;
+      max-width: 600px;
+      transition: background-color 0.2s;
+    }
+    .retexo-card {
+      background-color: #1C4575;
+    }
+    .rexana-card {
+      background-color: #C5C1E1;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .club-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+      font-weight: 400;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .retexo-card .club-label,
+    .retexo-card h3,
+    .retexo-card .nav-button {
+      color: #ffffff;
+    }
+    .rexana-card .club-label,
+    .rexana-card h3 {
+      color: #374151;
+    }
+    .club-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .retexo-card .club-name {
+      color: #DBE6F7;
+    }
+    .rexana-card .club-name {
+      color: #322876;
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .toggle-container {
+      display: flex;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+    }
+    .toggle-button {
+      padding: 8px 16px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .retexo-card .toggle-button {
+      color: #A9C7E8;
+    }
+    .rexana-card .toggle-button {
+      color: #6b7280;
+    }
+    .toggle-button.active {
+      font-weight: 600;
+    }
+    .retexo-card .toggle-button.active {
+      color: #ffffff;
+    }
+    .rexana-card .toggle-button.active {
+      color: #322876;
+    }
+    .toggle-button.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+    .retexo-card .toggle-button.active::after {
+      background-color: #ffffff;
+    }
+    .rexana-card .toggle-button.active::after {
+      background-color: #322876;
+    }
+    .retexo-card .toggle-button:hover:not(.active) {
+      color: #ffffff;
+    }
+    .rexana-card .toggle-button:hover:not(.active) {
+      color: #374151;
+    }
+    .search-container, .note-container {
+      margin-bottom: 16px;
+    }
+    .search-container label, .note-container label {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .retexo-card .search-container label, .retexo-card .note-container label {
+      color: #ffffff;
+    }
+    .rexana-card .search-container label, .rexana-card .note-container label {
+      color: #374151;
+    }
+    .search-container input, .note-container textarea {
+      width: 100%;
+      max-width: 100%;
+      padding: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      background-color: #ffffff;
+      color: #374151;
+      box-sizing: border-box;
+    }
+    .note-container textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .matches-list, .search-results {
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+    .match-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      background-color: #ffffff;
+      color: #000000;
+    }
+    .match-item.selected {
+      border-color: #3b82f6;
+    }
+    .retexo-card .match-item.selected {
+      background-color: #e0f2fe;
+    }
+    .rexana-card .match-item.selected {
+      background-color: #F6DDFF;
+      border-color: #322876;
+    }
+    .match-item:hover {
+      background-color: #f9fafb;
+    }
+    .match-item input[type="checkbox"] {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .retexo-card .match-item input[type="checkbox"] {
+      accent-color: #000000;
+    }
+    .rexana-card .match-item input[type="checkbox"] {
+      accent-color: #1C2526;
+    }
+    .match-content {
+      flex: 1;
+    }
+    .button {
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .nav-button {
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: none;
+      flex: 1;
+      margin: 0 4px;
+    }
+    #prevBtn.nav-button {
+      background-color: #0284c7;
+      color: #f3f4f6;
+    }
+    #prevBtn.nav-button:hover:not(:disabled) {
+      background-color: #0369a1;
+    }
+    .confirm-button {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .confirm-button:hover {
+      background-color: #2563eb;
+    }
+    .no-match-button {
+      background-color: #ef4444;
+      color: white;
+    }
+    .no-match-button:hover {
+      background-color: #dc2626;
+    }
+    .skip-button {
+      background-color: #6b7280;
+      color: white;
+    }
+    .skip-button:hover {
+      background-color: #4b5563;
+    }
+    .nav-button:disabled {
+      background-color: #d1d5db;
+      cursor: not-allowed;
+      color: #6b7280;
+    }
+    .error {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+    .retexo-card .error {
+      color: #ff9999;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+    }
+    .page-count {
+      text-align: center;
+      font-size: 0.875rem;
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .retexo-card .page-count {
+      color: #ffffff;
+    }
+    .rexana-card .page-count {
+      color: #374151;
+    }
+    .page-count input {
+      width: 50px;
+      padding: 2px 4px;
+      font-size: 0.875rem;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      text-align: center;
+      margin-right: 4px;
+    }
+    .retexo-card .page-count input {
+      color: #374151;
+      background-color: #ffffff;
+    }
+    .rexana-card .page-count input {
+      color: #374151;
+      background-color: #ffffff;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 16px;
+      }
+      .club-name {
+        font-size: 1.25rem;
+      }
+      .toggle-button {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+      .match-item input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+      }
+      .page-count {
+        font-size: 0.75rem;
+      }
+      .page-count input {
+        width: 40px;
+        font-size: 0.75rem;
+      }
+      .search-container input, .note-container textarea {
+        width: 100%;
+      }
+      .matches-list, .search-results {
+        height: 150px;
+      }
+      .nav-button {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        margin: 0 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container retexo-card">
+    <div class="toggle-container">
+      <button class="toggle-button active" id="retexo-toggle">Retexo Teams</button>
+      <button class="toggle-button" id="rexana-toggle">Rexana Teams</button>
+    </div>
+    
+    <h2>
+      <span class="club-label" id="club-label"></span>
+      <span class="club-name" id="club-name"></span>
+    </h2>
+    
+    <h3>Confirm or Select Match</h3>
+    <div class="matches-list" id="matches-list"></div>
+    
+    <div class="search-container">
+      <label for="search-input">Search for Better Match</label>
+      <input id="search-input" type="text" placeholder="Search for Club">
+      <div class="search-results" id="search-results"></div>
+    </div>
+    
+    <div class="note-container">
+      <label for="note-input">Add Note</label>
+      <textarea id="note-input" placeholder="Enter your note here"></textarea>
+    </div>
+    
+    <div class="navigation">
+      <button class="nav-button" id="prevBtn" disabled>Previous</button>
+      <button class="nav-button skip-button" id="skip">Skip</button>
+      <button class="nav-button no-match-button" id="no-match">No Good Match</button>
+      <button class="nav-button confirm-button" id="confirm-match">Confirm Match</button>
+    </div>
+    
+    <div class="page-count" id="page-count" aria-live="polite">
+      <input type="number" id="page-index-input" min="1">
+      <span id="page-total"></span>
+    </div>
+    
+    <div id="error-message" class="error"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Initialize DOM elements
+        const container = document.querySelector('.container');
+        if (!container) throw new Error('Container element not found');
+
+        const prevBtn = document.getElementById('prevBtn');
+        const confirmMatchBtn = document.getElementById('confirm-match');
+        const noMatchBtn = document.getElementById('no-match');
+        const skipBtn = document.getElementById('skip');
+        const searchInput = document.getElementById('search-input');
+        const matchesList = document.getElementById('matches-list');
+        const searchResults = document.getElementById('search-results');
+        const errorMessage = document.getElementById('error-message');
+        const retexoToggle = document.getElementById('retexo-toggle');
+        const rexanaToggle = document.getElementById('rexana-toggle');
+        const clubLabel = document.getElementById('club-label');
+        const clubName = document.getElementById('club-name');
+        const pageCount = document.getElementById('page-count');
+        const pageIndexInput = document.getElementById('page-index-input');
+        const pageTotal = document.getElementById('page-total');
+        const noteInput = document.getElementById('note-input');
+
+        // Log if critical elements are missing
+        if (!searchResults) console.warn('Search results element not found');
+        if (!retexoToggle || !rexanaToggle) console.warn('Toggle buttons not found');
+        if (!matchesList) console.warn('Matches list element not found');
+        if (!confirmMatchBtn || !noMatchBtn || !skipBtn) console.warn('Action buttons not found');
+        if (!noteInput) console.warn('Note input element not found');
+        if (!pageIndexInput || !pageTotal) console.warn('Page count elements not found');
+        if (!clubLabel || !clubName) console.warn('Club label or name elements not found');
+        if (!prevBtn) console.warn('Previous button not found');
+
+        // Fetch initial data from Netlify Function
+        let data;
+        try {
+          const response = await fetch('/api/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'getMappingData' })
+          });
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to fetch team data');
+          }
+          data = result.data;
+        } catch (e) {
+          console.error('Failed to fetch initial data:', e);
+          showError('Failed to load team data.');
+          return;
+        }
+
+        let retexoData = data.retexoData || [];
+        let rexanaData = data.rexanaData || [];
+        const searchOptions = data.searchOptions || [];
+
+        retexoData = Array.isArray(retexoData) ? retexoData.sort((a, b) => a.originalClub.localeCompare(b.originalClub, 'en', { sensitivity: 'base' })) : [];
+        rexanaData = Array.isArray(rexanaData) ? rexanaData.sort((a, b) => a.originalClub.localeCompare(b.originalClub, 'en', { sensitivity: 'base' })) : [];
+
+        let mappingData = retexoData;
+        let currentIndex = 0;
+        let selectedMatch = null;
+        let currentMatches = [];
+        let currentMode = 'retexo';
+
+        function cleanString(value) {
+          if (typeof value !== 'string' || !value) return '';
+          return value.replace(/[\x00-\x1F\x7F-\x9F]/g, '').replace(/\s+/g, ' ').trim();
+        }
+
+        function normalizeString(str) {
+          return cleanString(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        }
+
+        function showError(message) {
+          if (errorMessage) {
+            errorMessage.textContent = cleanString(message);
+            setTimeout(() => {
+              if (errorMessage) errorMessage.textContent = '';
+            }, 3000);
+          }
+        }
+
+        function clearError() {
+          if (errorMessage) errorMessage.textContent = '';
+        }
+
+        function searchTeams(query) {
+          const normalizedQuery = normalizeString(query);
+          if (!normalizedQuery) return [];
+
+          const existingKeys = new Set(currentMatches.map(match => match.key));
+          const matches = searchOptions
+            .filter(item => !existingKeys.has(item.key))
+            .map(item => {
+              const normalizedTeam = normalizeString(item.team);
+              let score = 0;
+              if (normalizedTeam === normalizedQuery) score = 3;
+              else if (normalizedTeam.startsWith(normalizedQuery)) score = 2;
+              else if (normalizedTeam.includes(normalizedQuery)) score = 1;
+              return { ...item, score, normalizedTeam };
+            })
+            .filter(item => item.score > 0);
+
+          const groupedMatches = [];
+          const seenTeams = new Set();
+          matches.forEach(item => {
+            if (!seenTeams.has(item.normalizedTeam) || item.score === 3) {
+              groupedMatches.push(item);
+              seenTeams.add(item.normalizedTeam);
+            } else if (matches.some(m => m.normalizedTeam === item.normalizedTeam && m.score === 3)) {
+              groupedMatches.push(item);
+            }
+          });
+
+          return groupedMatches.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return a.team.localeCompare(b.team);
+          });
+        }
+
+        function searchMatches() {
+          try {
+            clearError();
+            if (!searchInput) return;
+            const query = searchInput.value;
+            if (!query) {
+              if (searchResults) searchResults.innerHTML = '';
+              return;
+            }
+            const searchMatches = searchTeams(query);
+            updateSearchResults(searchMatches);
+          } catch (e) {
+            console.error('Error searching matches:', e);
+            showError('Failed to search.');
+          }
+        }
+
+        function updateToggleStyles() {
+          if (retexoToggle && rexanaToggle) {
+            retexoToggle.classList.toggle('active', currentMode === 'retexo');
+            rexanaToggle.classList.toggle('active', currentMode === 'rexana');
+          }
+        }
+
+        function switchToRetexo() {
+          try {
+            currentMode = 'retexo';
+            mappingData = retexoData;
+            currentIndex = 0;
+            if (container) {
+              container.classList.remove('rexana-card');
+              container.classList.add('retexo-card');
+            }
+            updateToggleStyles();
+            updateClubDisplay();
+          } catch (e) {
+            console.error('Error switching to Retexo:', e);
+            showError('Failed to switch to Retexo teams.');
+          }
+        }
+
+        function switchToRexana() {
+          try {
+            currentMode = 'rexana';
+            mappingData = rexanaData;
+            currentIndex = 0;
+            if (container) {
+              container.classList.remove('retexo-card');
+              container.classList.add('rexana-card');
+            }
+            updateToggleStyles();
+            updateClubDisplay();
+          } catch (e) {
+            console.error('Error switching to Rexana:', e);
+            showError('Failed to switch to Rexana teams.');
+          }
+        }
+
+        function updateClubDisplay() {
+          try {
+            clearError();
+            if (!mappingData || currentIndex < 0 || currentIndex >= mappingData.length || mappingData.length === 0) {
+              if (clubLabel) clubLabel.textContent = '';
+              if (clubName) clubName.textContent = `No ${currentMode === 'retexo' ? 'Retexo' : 'Rexana'} records available.`;
+              if (matchesList) matchesList.innerHTML = '<p style="color: #6b7280;">No records available.</p>';
+              if (searchResults) searchResults.innerHTML = '';
+              if (pageIndexInput) pageIndexInput.value = '';
+              if (pageTotal) pageTotal.textContent = 'of 0';
+              if (prevBtn) prevBtn.disabled = true;
+              if (confirmMatchBtn) confirmMatchBtn.disabled = true;
+              if (noMatchBtn) noMatchBtn.disabled = true;
+              if (skipBtn) skipBtn.disabled = true;
+              if (noteInput) noteInput.value = '';
+              selectedMatch = null;
+              currentMatches = [];
+              return;
+            }
+
+            const item = mappingData[currentIndex];
+            if (clubLabel) clubLabel.textContent = `${currentMode === 'retexo' ? 'Retexo' : 'Rexana'} Club Name:`;
+            if (clubName) clubName.textContent = cleanString(item.originalClub);
+            if (searchInput) searchInput.value = '';
+            if (searchResults) searchResults.innerHTML = '';
+            if (noteInput) noteInput.value = cleanString(item.note || '');
+
+            currentMatches = (item.additionalMatches || []).map(match => ({
+              key: match.key,
+              team: match.team,
+              cValue: match.cValue,
+              score: match.score
+            }));
+
+            const seenTeams = new Set();
+            currentMatches = currentMatches.filter(match => {
+              const identifier = `${match.team}|${match.cValue}`;
+              if (seenTeams.has(identifier)) return false;
+              seenTeams.add(identifier);
+              return true;
+            });
+
+            if (item.key && !currentMatches.some(m => m.key === item.key)) {
+              const searchValuesMap = new Map(searchOptions.map(opt => [opt.key, opt]));
+              const match = searchValuesMap.get(item.key);
+              if (match) {
+                currentMatches.unshift({
+                  key: match.key,
+                  team: match.team,
+                  cValue: match.cValue,
+                  score: getSimilarityScore(item.originalClub, match.team)
+                });
+                currentMatches = currentMatches.slice(0, 3);
+              }
+            }
+
+            selectedMatch = currentMatches.find(m => m.key === item.defaultValue.key) || (currentMatches.length > 0 ? currentMatches[0] : null);
+
+            updateMatchesList(currentMatches);
+
+            if (pageIndexInput) pageIndexInput.value = currentIndex + 1;
+            if (pageTotal) pageTotal.textContent = `of ${mappingData.length}`;
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (confirmMatchBtn) confirmMatchBtn.disabled = !selectedMatch;
+            if (noMatchBtn) noMatchBtn.disabled = false;
+            if (skipBtn) skipBtn.disabled = currentIndex === mappingData.length - 1;
+          } catch (e) {
+            console.error('Error updating club display:', e);
+            showError('Failed to update club display.');
+          }
+        }
+
+        function updateMatchesList(matches) {
+          try {
+            if (!matchesList) return;
+            if (!matches || matches.length === 0) {
+              matchesList.innerHTML = '<p style="color: #6b7280;">No matches found.</p>';
+              selectedMatch = null;
+              return;
+            }
+
+            matchesList.innerHTML = matches.map(match => {
+              if (!match.key) return '';
+              return `
+                <div class="match-item ${selectedMatch && selectedMatch.key === match.key ? 'selected' : ''}"
+                     data-key="${match.key}"
+                     role="option"
+                     aria-checked="${selectedMatch && selectedMatch.key === match.key}">
+                  <input type="checkbox" 
+                         ${selectedMatch && selectedMatch.key === match.key ? 'checked' : ''} 
+                         data-key="${match.key}"
+                         aria-label="Select ${cleanString(match.team)}"
+                         tabindex="0">
+                  <div class="match-content">
+                    <div style="font-weight: 500;">${cleanString(match.team)}</div>
+                    <div style="font-size: 0.75rem; color: #6b7280;">${cleanString(match.cValue || 'No country specified')}</div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            matchesList.querySelectorAll('.match-item').forEach(item => {
+              const key = item.getAttribute('data-key');
+              item.addEventListener('click', () => selectMatch(key));
+            });
+            matchesList.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+              const key = checkbox.getAttribute('data-key');
+              checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectMatch(key);
+              });
+            });
+          } catch (e) {
+            console.error('Error updating matches list:', e);
+            showError('Failed to update matches list.');
+          }
+        }
+
+        function updateSearchResults(matches) {
+          try {
+            if (!searchResults) return;
+            if (!matches || matches.length === 0) {
+              searchResults.innerHTML = '<p style="color: #6b7280;">No search results found.</p>';
+              return;
+            }
+
+            searchResults.innerHTML = matches.map(match => `
+              <div class="match-item ${selectedMatch && selectedMatch.key === match.key ? 'selected' : ''}"
+                   data-key="${match.key}"
+                   role="option"
+                   aria-checked="${selectedMatch && selectedMatch.key === match.key}">
+                <input type="checkbox" 
+                       ${selectedMatch && selectedMatch.key === match.key ? 'checked' : ''} 
+                       data-key="${match.key}"
+                       aria-label="Select ${cleanString(match.team)}"
+                       tabindex="0">
+                <div class="match-content">
+                  <div style="font-weight: 500;">${cleanString(match.team)}</div>
+                  <div style="font-size: 0.75rem; color: #6b7280;">${cleanString(match.cValue || 'No country specified')}</div>
+                </div>
+              </div>
+            `).join('');
+
+            searchResults.querySelectorAll('.match-item').forEach(item => {
+              const key = item.getAttribute('data-key');
+              item.addEventListener('click', () => selectMatch(key));
+            });
+            searchResults.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+              const key = checkbox.getAttribute('data-key');
+              checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectMatch(key);
+              });
+            });
+          } catch (e) {
+            console.error('Error updating search results:', e);
+            showError('Failed to update search results.');
+          }
+        }
+
+        async function selectMatch(matchKey) {
+          try {
+            clearError();
+            const newMatch = [...currentMatches, ...searchTeams(searchInput.value)].find(m => m.key === matchKey);
+            if (!newMatch) {
+              console.error('Selected match not found for key:', matchKey);
+              showError('Failed to select match: Match not found.');
+              return;
+            }
+
+            const item = mappingData[currentIndex];
+            const isExistingMatch = currentMatches.some(m => m.key === matchKey);
+
+            const prevState = {
+              defaultValue: { ...item.defaultValue },
+              key: item.key,
+              additionalMatches: [...(item.additionalMatches || [])],
+              additionalKeys: item.additionalKeys
+            };
+
+            item.defaultValue = {
+              key: newMatch.key,
+              team: newMatch.team,
+              cValue: newMatch.cValue
+            };
+            item.key = newMatch.key;
+
+            if (!isExistingMatch) {
+              item.additionalMatches = [{
+                key: newMatch.key,
+                team: newMatch.team,
+                cValue: newMatch.cValue,
+                score: newMatch.score || 0
+              }];
+
+              const searchValuesMap = new Map(searchOptions.map(opt => [opt.key, opt]));
+              const currentKeys = (item.additionalKeys || '')
+                .replace(/[\{\}\s]/g, '')
+                .split(',')
+                .filter(key => key && key !== newMatch.key);
+              currentKeys.slice(0, 2).forEach(key => {
+                const match = searchValuesMap.get(key);
+                if (match) {
+                  item.additionalMatches.push({
+                    key: match.key,
+                    team: match.team,
+                    cValue: match.cValue,
+                    score: match.score || 0
+                  });
+                }
+              });
+
+              if (searchInput) searchInput.value = '';
+              if (searchResults) searchResults.innerHTML = '';
+            }
+
+            selectedMatch = newMatch;
+            updateClubDisplay();
+            showError('Match updated successfully');
+
+            try {
+              const response = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'saveMatch',
+                  rowIndex: item.rowIndex,
+                  selectedKey: newMatch.key
+                })
+              });
+              const result = await response.json();
+              if (!result.success) {
+                throw new Error(result.error || 'Failed to save match');
+              }
+              item.additionalKeys = result.data.additionalKeys;
+            } catch (err) {
+              console.error('Failed to save match:', err);
+              item.defaultValue = prevState.defaultValue;
+              item.key = prevState.key;
+              item.additionalMatches = prevState.additionalMatches;
+              item.additionalKeys = prevState.additionalKeys;
+              selectedMatch = item.additionalMatches.find(m => m.key === item.defaultValue.key) || (item.additionalMatches.length > 0 ? item.additionalMatches[0] : null);
+              updateClubDisplay();
+              showError('Failed to save match: ' + err.message);
+            }
+          } catch (e) {
+            console.error('Error selecting match:', e);
+            showError('Failed to select match.');
+          }
+        }
+
+        function skip() {
+          try {
+            clearError();
+            if (currentIndex < mappingData.length - 1) {
+              currentIndex++;
+              updateClubDisplay();
+            }
+          } catch (e) {
+            console.error('Error skipping to next record:', e);
+            showError('Failed to skip to next record.');
+          }
+        }
+
+        async function confirmMatch() {
+          try {
+            clearError();
+            const item = mappingData[currentIndex];
+            if (!selectedMatch) {
+              showError('Please select a match first.');
+              return;
+            }
+
+            const prevState = {
+              mappingData: [...mappingData],
+              currentIndex: currentIndex
+            };
+
+            mappingData.splice(currentIndex, 1);
+            if (mappingData.length === 0) {
+              currentIndex = 0;
+            } else if (currentIndex >= mappingData.length) {
+              currentIndex = mappingData.length - 1;
+            }
+            showError('Match confirmed successfully');
+            updateClubDisplay();
+
+            try {
+              const response = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'confirmRows',
+                  rowIndices: [item.rowIndex]
+                })
+              });
+              const result = await response.json();
+              if (!result.success) {
+                throw new Error(result.error || 'Failed to confirm match');
+              }
+            } catch (err) {
+              console.error('Failed to confirm match:', err);
+              mappingData = prevState.mappingData;
+              currentIndex = prevState.currentIndex;
+              updateClubDisplay();
+              showError('Failed to confirm match: ' + err.message);
+            }
+          } catch (e) {
+            console.error('Error confirming match:', e);
+            showError('Confirmation failed.');
+          }
+        }
+
+        async function noMatch() {
+          try {
+            clearError();
+            const item = mappingData[currentIndex];
+
+            const prevState = {
+              note: item.note,
+              defaultValue: { ...item.defaultValue },
+              additionalMatches: [...(item.additionalMatches || [])],
+              mappingData: [...mappingData],
+              currentIndex: currentIndex
+            };
+
+            item.note = 'No match found';
+            item.defaultValue = { key: '', team: '', cValue: '' };
+            item.additionalMatches = [];
+            mappingData.splice(currentIndex, 1);
+            if (mappingData.length === 0) {
+              currentIndex = 0;
+            } else if (currentIndex >= mappingData.length) {
+              currentIndex = mappingData.length - 1;
+            }
+            showError('Marked as no match found and confirmed');
+            updateClubDisplay();
+
+            try {
+              const noteResponse = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'saveNote',
+                  rowIndex: item.rowIndex,
+                  note: 'No match found'
+                })
+              });
+              const noteResult = await noteResponse.json();
+              if (!noteResult.success) {
+                throw new Error(noteResult.error || 'Failed to save no match note');
+              }
+
+              const confirmResponse = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'confirmRows',
+                  rowIndices: [item.rowIndex]
+                })
+              });
+              const confirmResult = await confirmResponse.json();
+              if (!confirmResult.success) {
+                throw new Error(confirmResult.error || 'Failed to confirm no match');
+              }
+            } catch (err) {
+              console.error('Failed to process no match:', err);
+              mappingData = prevState.mappingData;
+              currentIndex = prevState.currentIndex;
+              const restoredItem = mappingData[currentIndex];
+              restoredItem.note = prevState.note;
+              restoredItem.defaultValue = prevState.defaultValue;
+              restoredItem.additionalMatches = prevState.additionalMatches;
+              updateClubDisplay();
+              showError('Failed to process no match: ' + err.message);
+            }
+          } catch (e) {
+            console.error('Error in noMatch:', e);
+            showError('Failed to process no match action.');
+          }
+        }
+
+        async function saveNote() {
+          try {
+            clearError();
+            const item = mappingData[currentIndex];
+            if (!noteInput) {
+              showError('Failed to save note: Input not found.');
+              return;
+            }
+            const note = cleanString(noteInput.value);
+
+            const prevNote = item.note;
+
+            item.note = note;
+            showError('Note saved successfully');
+
+            try {
+              const response = await fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'saveNote',
+                  rowIndex: item.rowIndex,
+                  note: note
+                })
+              });
+              const result = await response.json();
+              if (!result.success) {
+                throw new Error(result.error || 'Failed to save note');
+              }
+            } catch (err) {
+              console.error('Failed to save note:', err);
+              item.note = prevNote;
+              if (noteInput) noteInput.value = cleanString(prevNote || '');
+              showError('Failed to save note: ' + err.message);
+            }
+          } catch (e) {
+            console.error('Error saving note:', e);
+            showError('Failed to save note.');
+          }
+        }
+
+        function getSimilarityScore(str1, str2) {
+          const cleanStr1 = cleanString(str1 || '');
+          const cleanStr2 = cleanString(str2 || '');
+          if (!cleanStr1 && !cleanStr2) return 1;
+          const maxLength = Math.max(cleanStr1.length, cleanStr2.length);
+          if (maxLength === 0) return 1;
+          const distance = levenshteinDistance(cleanStr1, cleanStr2);
+          return (maxLength - distance) / maxLength;
+        }
+
+        function levenshteinDistance(a, b) {
+          const aClean = cleanString(a || '');
+          const bClean = cleanString(b || '');
+          if (aClean.length === 0) return bClean.length;
+          if (bClean.length === 0) return aClean.length;
+
+          const matrix = Array(bClean.length + 1).fill(null).map(() => Array(aClean.length + 1).fill(null));
+          for (let i = 0; i <= bClean.length; i++) matrix[i][0] = i;
+          for (let j = 0; j <= aClean.length; j++) matrix[0][j] = j;
+
+          for (let i = 1; i <= bClean.length; i++) {
+            for (let j = 1; j <= aClean.length; j++) {
+              const indicator = bClean[i - 1] === aClean[j - 1] ? 0 : 1;
+              matrix[i][j] = Math.min(
+                matrix[i - 1][j - 1] + indicator,
+                matrix[i][j - 1] + 1,
+                matrix[i - 1][j] + 1
+              );
+            }
+          }
+          return matrix[bClean.length][aClean.length];
+        }
+
+        async function updateDataAndMoveNext() {
+          try {
+            const response = await fetch('/api/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'getMappingData' })
+            });
+            const result = await response.json();
+            if (!result.success) {
+              throw new Error(result.error || 'Failed to refresh data');
+            }
+            const newData = result.data;
+
+            if (currentMode === 'retexo') {
+              retexoData.splice(0, retexoData.length, ...newData.retexoData);
+              retexoData.sort((a, b) => a.originalClub.localeCompare(b.originalClub, 'en', { sensitivity: 'base' }));
+              mappingData = retexoData;
+            } else {
+              rexanaData.splice(0, rexanaData.length, ...newData.rexanaData);
+              rexanaData.sort((a, b) => a.originalClub.localeCompare(b.originalClub, 'en', { sensitivity: 'base' }));
+              mappingData = rexanaData;
+            }
+            if (currentIndex >= mappingData.length) {
+              currentIndex = mappingData.length - 1;
+            } else {
+              currentIndex++;
+            }
+            updateClubDisplay();
+          } catch (e) {
+            console.error('Error updating data:', e);
+            showError('Failed to update data.');
+          }
+        }
+
+        if (pageIndexInput) {
+          pageIndexInput.addEventListener('change', () => {
+            const value = parseInt(pageIndexInput.value, 10);
+            if (isNaN(value) || value < 1 || value > mappingData.length) {
+              showError(`Please enter a number between 1 and ${mappingData.length}.`);
+              pageIndexInput.value = currentIndex + 1;
+              return;
+            }
+            currentIndex = value - 1;
+            updateClubDisplay();
+          });
+          pageIndexInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              pageIndexInput.blur();
+            }
+          });
+        }
+
+        if (retexoToggle) retexoToggle.addEventListener('click', switchToRetexo);
+        if (rexanaToggle) rexanaToggle.addEventListener('click', switchToRexana);
+        if (confirmMatchBtn) confirmMatchBtn.addEventListener('click', confirmMatch);
+        if (noMatchBtn) noMatchBtn.addEventListener('click', noMatch);
+        if (skipBtn) skipBtn.addEventListener('click', skip);
+        if (searchInput) searchInput.addEventListener('input', searchMatches);
+        if (noteInput) noteInput.addEventListener('blur', saveNote);
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+              currentIndex--;
+              updateClubDisplay();
+            }
+          });
+        }
+
+        updateToggleStyles();
+        updateClubDisplay();
+      } catch (e) {
+        console.error('Error initializing app:', e);
+        showError('Failed to initialize application. Please refresh the page.');
+      }
+    });
+  </script>
+</body>
+</html>
